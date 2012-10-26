@@ -48,9 +48,11 @@ io.sockets.on('connection', function (socket) {
     socket.join(data.presentationID);
   });
   socket.on('next', function (data) {
+    routes.presentations[socket.room].pgno++;
     io.sockets.in(socket.room).emit('next_slide');
   });
   socket.on('previous', function (data) {
+    routes.presentations[socket.room].pgno--;
     io.sockets.in(socket.room).emit('previous_slide');
   });
 });
