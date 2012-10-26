@@ -73,9 +73,7 @@
         $('#nextBtn').click(function(){
           socket.emit('next');
         });
-        <% } %>
-        
-        
+        <% } %>       
         var socket = io.connect(loc);
         socket.on('connect', function(){
           socket.emit('attend_presentation', {presentationID : presentationID});
