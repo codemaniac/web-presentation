@@ -10,8 +10,8 @@
       <% if (presenter) { %>  
       <div class="row" align="center">
         <div class="btn-group">
-          <button class="btn" onclick="goPrevious()"><i class="icon-step-backward"></i>Previous</button>
-          <button class="btn" onclick="goNext()">Next<i class="icon-step-forward"></i></button>         icon-info-sign
+          <button class="btn" id="prevBtn"><i class="icon-step-backward"></i>Previous</button>
+          <button class="btn" id="nextBtn">Next<i class="icon-step-forward"></i></button>
           <button class="btn" id="presentationInfoBtn"><i class="icon-info-sign"></i></button>
         </div>
       </div>
@@ -40,7 +40,7 @@
         <h5><%= id %></h5>
         <br />
         <p>Share this link:</p>
-        <h5>http://localhost:3000/<%= id %></h5>
+        <h5>http://localhost:8080/<%= id %></h5>
       </div>
       <div class="modal-footer">
         <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
@@ -48,90 +48,68 @@
     </div>
     <% } %>
     <script src="http://code.jquery.com/jquery-latest.min.js" type="text/javascript"></script>
-    <% if (presenter) { %>  
+    <script src="/3rdparty/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script type="text/javascript" src="/3rdparty/pdf.js"></script> 
     <script type="text/javascript">
+
       $(document).ready(function(){
+        <% if (presenter) { %>  
         $('#urlModal').modal('show');
         $('#presentationInfoBtn').click(function(){
           $('#urlModal').modal('show');
         });
-      });
-    </script>
-    <% } %>
-    <script src="/3rdparty/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
-    <script src="/socket.io/socket.io.js"></script>
-    <script>
-      var socket = io.connect('http://localhost');
-      socket.on('next_slide', function (data) {
-        if (pageNum >= pdfDoc.numPages)
-          return;
-        pageNum++;
-        renderPage(pageNum);
-      });
-      socket.on('previous_slide', function (data) {
-        if (pageNum <= 1)
-          return;
-        pageNum--;
-        renderPage(pageNum);
-      });
-    </script>
-    <script type="text/javascript" src="/3rdparty/pdf.js"></script> 
-    <script type="text/javascript">
-      var url = "http://localhost:3000/uploads/<%= presentationFileName %>";
-      PDFJS.disableWorker = true;
-      var pdfDoc = null,
-          pageNum = 1,
-          scale = 1.0,
-          canvas = document.getElementById('presentationCanvas'),
-          ctx = canvas.getContext('2d');
-      function renderPage(num) {
-        // Using promise to fetch the page
-        pdfDoc.getPage(num).then(function(page) {
-          var viewport = page.getViewport(scale);
-          canvas.height = viewport.height;
-          canvas.width = viewport.width;
-
-          // Render PDF page into canvas context
-          var renderContext = {
-            canvasContext: ctx,
-            viewport: viewport
-          };
-          page.render(renderContext);
+        $('#prevBtn').click(function(){
+          socket.emit('previous');
         });
-
-        // Update page counters
-        document.getElementById('page_num').textContent = pageNum;
-        document.getElementById('page_count').textContent = pdfDoc.numPages;
-      }
-      <% if (presenter) { %>  
-      //
-      // Go to previous page
-      //
-      function goPrevious() {     
-        socket.emit('previous') 
-        if (pageNum <= 1)
+        $('#nextBtn').click(function(){
+          socket.emit('next');
+        });
+        <% } %>
+        var presentationID = "<%= id %>";
+        var loc = document.location.href;
+        loc = loc.substr(0, loc.lastIndexOf('/')); 
+        var socket = io.connect(loc);
+        socket.on('connect', function(){
+          socket.emit('attend_presentation', {presentationID : presentationID});
+        });
+        socket.on('next_slide', function (data) {
+          if (pageNum >= pdfDoc.numPages)
           return;
-        pageNum--;
-        renderPage(pageNum);
-      }
-
-      //
-      // Go to next page
-      //
-      function goNext() {
-        socket.emit('next');
-        if (pageNum >= pdfDoc.numPages)
-          return;
-        pageNum++;
-        renderPage(pageNum);
-      }
-      <% } %>
-      //
-      // Asynchronously download PDF as an ArrayBuffer
-      //
-      PDFJS.getDocument(url).then(function getPdfHelloWorld(_pdfDoc) {
-        pdfDoc = _pdfDoc;
-        renderPage(pageNum);
+          pageNum++;
+          renderPage(pageNum);
+        });
+        socket.on('previous_slide', function (data) {
+          if (pageNum <= 1)
+            return;
+          pageNum--;
+          renderPage(pageNum);
+        });
+        var url = loc+"/uploads/<%= presentationFileName %>";
+        PDFJS.disableWorker = true;
+        var pdfDoc = null,
+            pageNum = <%= pgno %>,
+            scale = 1.0,
+            canvas = document.getElementById('presentationCanvas'),
+            ctx = canvas.getContext('2d');
+        function renderPage(num) {
+          pdfDoc.getPage(num).then(function(page) {
+            var viewport = page.getViewport(scale);
+            canvas.height = viewport.height;
+            canvas.width = viewport.width;
+            var renderContext = {
+              canvasContext: ctx,
+              viewport: viewport
+            };
+            page.render(renderContext);
+          });
+          document.getElementById('page_num').textContent = pageNum;
+          document.getElementById('page_count').textContent = pdfDoc.numPages;
+        }        
+        PDFJS.getDocument(url).then(function getPdfHelloWorld(_pdfDoc) {
+          pdfDoc = _pdfDoc;
+          renderPage(pageNum);
+        });
       });
     </script>  
   </body>

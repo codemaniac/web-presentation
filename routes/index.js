@@ -18,12 +18,12 @@ exports.present = function(req, res) {
   var passphrase = req.body.inputPassword;
   crypto.randomBytes(12, function(ex, buf) {
     var token = buf.toString('hex');
-    presentations[token] = {'name': presenterName, 'title': presentationTitle, 'passphrase': passphrase, 'file': fileName, 'pg' : 1};
-    res.render('presentation', {presenter : true, topic : presentationTitle, id : token, presentationFileName : fileName});
+    presentations[token] = {'name': presenterName, 'title': presentationTitle, 'passphrase': passphrase, 'file': fileName, 'pgno' : 1};
+    res.render('presentation', {presenter : true, topic : presentationTitle, id : token, presentationFileName : fileName, pgno : 1});
   });  
 }
 
 exports.attend = function(req, res){
   var presentation = presentations[req.params.id];
-  res.render('presentation', {presenter : false, topic : presentation.title, presentationFileName : presentation.file});
+  res.render('presentation', {presenter : false, topic : presentation.title, presentationFileName : presentation.file, id : req.params.id, pgno : presentation.pgno});
 };

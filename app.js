@@ -38,16 +38,20 @@ app.get('/:id', routes.attend);
 app.post('/present', routes.present) 
 
 var server = http.createServer(app);
-server.listen(3000);
+server.listen(8080, '0.0.0.0');
 
 io = io.listen(server);
 
 io.sockets.on('connection', function (socket) {
+  socket.on('attend_presentation', function(data){
+    socket.room = data.presentationID;
+    socket.join(data.presentationID);
+  });
   socket.on('next', function (data) {
-    socket.broadcast.emit('next_slide', 'next slide');
+    io.sockets.in(socket.room).emit('next_slide');
   });
   socket.on('previous', function (data) {
-    socket.broadcast.emit('previous_slide', 'previous slide');
+    io.sockets.in(socket.room).emit('previous_slide');
   });
 });
 
