@@ -24,5 +24,6 @@ exports.present = function(req, res) {
 }
 
 exports.attend = function(req, res){
-  res.render('presentation', {presenter : false, topic : presentations[req.params.id].title, presentationFileName : presentations[req.params.id].file});
+  var presentation = presentations[req.params.id];
+  res.render('presentation', {presenter : false, topic : presentation.title, presentationFileName : presentation.file});
 };

@@ -35,7 +35,7 @@ app.configure('development', function(){
 
 app.get('/', routes.index);
 app.get('/:id', routes.attend);
-app.post('/present', routes.present)
+app.post('/present', routes.present) 
 
 var server = http.createServer(app);
 server.listen(3000);
