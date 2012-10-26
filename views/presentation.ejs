@@ -40,21 +40,29 @@
         <h5><%= id %></h5>
         <br />
         <p>Share this link:</p>
-        <h5>http://localhost:8080/<%= id %></h5>
+        <h5 id="presentationLink"></h5>
       </div>
       <div class="modal-footer">
         <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
       </div>
     </div>
     <% } %>
+    <!-- Le some HTML5 shim for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 10]>
+      <script type="text/javascript" src="/3rdparty/html5.js"></script>
+      <script type="text/javascript" src="/3rdparty/excanvas.compiled.js"></script>
+    <![endif]--> 
     <script src="http://code.jquery.com/jquery-latest.min.js" type="text/javascript"></script>
     <script src="/3rdparty/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script type="text/javascript" src="/3rdparty/pdf.js"></script> 
     <script type="text/javascript">
-
       $(document).ready(function(){
         <% if (presenter) { %>  
+        var loc = document.location.href;
+        loc = loc.substr(0, loc.lastIndexOf('/')); 
+        var presentationID = "<%= id %>";
+        $("#presentationLink").html(loc + '/' + presentationID);
         $('#urlModal').modal('show');
         $('#presentationInfoBtn').click(function(){
           $('#urlModal').modal('show');
@@ -66,9 +74,8 @@
           socket.emit('next');
         });
         <% } %>
-        var presentationID = "<%= id %>";
-        var loc = document.location.href;
-        loc = loc.substr(0, loc.lastIndexOf('/')); 
+        
+        
         var socket = io.connect(loc);
         socket.on('connect', function(){
           socket.emit('attend_presentation', {presentationID : presentationID});
