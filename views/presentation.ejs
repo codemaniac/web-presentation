@@ -16,12 +16,12 @@
             <% } %>            
             <button class="btn btn-inverse" id="zoomOutBtn"><i class="icon-minus icon-white"></i></button>
             <button class="btn btn-inverse" id="zoomInBtn"><i class="icon-plus icon-white"></i></button>
+            <button class="btn btn-inverse" id="noZoomBtn"><strong>1:1</strong></button>
+            <button class="btn btn-inverse" id="refreshBtn"><i class="icon-refresh icon-white"></i></button>
             <% if (!presenter) { %>   
             <a class="btn btn-inverse" id="downloadBtn"><i class="icon-download-alt icon-white"></i></a>
             <% } %>            
-            <% if (presenter) { %>   
-            <button class="btn btn-inverse" id="presentationInfoBtn"><i class="icon-info-sign icon-white"></i></button>              
-            <% } %>            
+            <button class="btn btn-inverse" id="infoBtn"><i class="icon-info-sign icon-white"></i></button>              
           </div>    
         </div>
       </div>
@@ -37,25 +37,28 @@
         <p>&copy; <a href="#">codemaniac</a>, 2012</p>
       </div>
     </footer>    
-    <% if (presenter) { %>  
-    <!-- Presentation URL modal -->
-    <div class="modal hide fade" id="urlModal">
+    <!-- info modal -->
+    <div class="modal hide fade" id="infoModal">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
         <h3>Presentation Details</h3>
       </div>
       <div class="modal-body">
+        <p>Presenter:</p>
+        <h5><%= name %></h5>
+        <p>Title:</p>
+        <h5><%= topic %></h5>
         <p>Presentation ID:</p>
         <h5><%= id %></h5>
-        <br />
+        <% if (presenter) { %>  
         <p>Share this link:</p>
         <h5 id="presentationLink"></h5>
+        <% } %>
       </div>
       <div class="modal-footer">
         <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
       </div>
-    </div>
-    <% } %>
+    </div>    
     <!-- Le some HTML5 shim for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 10]>
       <script type="text/javascript" src="/3rdparty/html5.js"></script>
@@ -73,10 +76,7 @@
         var presentationID = "<%= id %>";
         <% if (presenter) { %>         
         $("#presentationLink").html(loc + '/' + presentationID);
-        $('#urlModal').modal('show');
-        $('#presentationInfoBtn').click(function(){
-          $('#urlModal').modal('show');
-        });
+        $('#infoModal').modal('show');
         $('#prevBtn').click(function(){
           socket.emit('previous');
         });
@@ -87,6 +87,9 @@
         <% if (!presenter) { %>         
         $('#downloadBtn').attr('href', loc+"/uploads/<%= presentationFileName %>");
         <% } %>       
+        $('#infoBtn').click(function(){
+          $('#infoModal').modal('show');
+        });
         $('#zoomInBtn').click(function(){
           if(scale < 3) {
             scale = scale + 0.5;
@@ -98,6 +101,15 @@
             scale = scale - 0.5;
             renderPage(pageNum);
           }
+        });
+        $('#noZoomBtn').click(function(){
+          if(scale != 1.0) {
+            scale = 1.0,
+            renderPage(pageNum);
+          }
+        });
+        $('#refreshBtn').click(function(){
+          renderPage(pageNum);
         });
         var socket = io.connect(loc);
         socket.on('connect', function(){

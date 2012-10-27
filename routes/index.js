@@ -19,11 +19,22 @@ exports.present = function(req, res) {
   crypto.randomBytes(12, function(ex, buf) {
     var token = buf.toString('hex');
     presentations[token] = {'name': presenterName, 'title': presentationTitle, 'passphrase': passphrase, 'file': fileName, 'pgno' : 1};
-    res.render('presentation', {presenter : true, topic : presentationTitle, id : token, presentationFileName : fileName, pgno : 1});
+    console.log(presentations[token]);
+    res.render('presentation', {presenter : true, 
+      topic : presentationTitle, 
+      id : token, 
+      presentationFileName : fileName, 
+      pgno : 1, 
+      name : presenterName});
   });  
 }
 
 exports.attend = function(req, res){
   var presentation = presentations[req.params.id];
-  res.render('presentation', {presenter : false, topic : presentation.title, presentationFileName : presentation.file, id : req.params.id, pgno : presentation.pgno});
+  res.render('presentation', {presenter : false, 
+    topic : presentation.title, 
+    presentationFileName : presentation.file, 
+    id : req.params.id, 
+    pgno : presentation.pgno,
+    name : presentation.name});
 };
