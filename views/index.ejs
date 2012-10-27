@@ -58,7 +58,6 @@
           </div>
       </div>
       <div class="modal-footer">
-        <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
         <input type='submit' class="btn btn-primary" value="Start" />
       </div>
       </form>
@@ -80,7 +79,6 @@
           </div>
       </div>
       <div class="modal-footer">
-        <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
         <button class="btn btn-primary" id="attendPresentationButton">Attend</button>
       </div>
     </div>
@@ -90,10 +88,13 @@
     <script type="text/javascript">
       $(document).ready(function(){
         $('#attendPresentationButton').click(function(){
-          var loc = document.location.href;
-          loc = loc.substr(0, loc.lastIndexOf('/')); 
-          var url = loc + '/' + $('#inputPresentationID').val();
-          window.location.href = url;
+          var presentationID = $('#inputPresentationID').val();
+          if (presentationID) {
+            var loc = document.location.href;
+            loc = loc.substr(0, loc.lastIndexOf('/')); 
+            var url = loc + '/' + presentationID;
+            window.location.href = url;
+          }
         });
 
         $('#conductForm').validate({
