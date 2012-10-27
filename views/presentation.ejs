@@ -8,15 +8,22 @@
   <body>
     <div class="navbar">
       <div class="navbar-inner" align="center">
-        <% if (presenter) { %>   
         <div class="row">
           <div class="btn-group">
+            <% if (presenter) { %>   
             <button class="btn btn-inverse" id="prevBtn"><i class="icon-step-backward icon-white"></i></button>
             <button class="btn btn-inverse" id="nextBtn"><i class="icon-step-forward icon-white"></i></button>
-            <button class="btn btn-inverse" id="presentationInfoBtn"><i class="icon-info-sign icon-white"></i></button>  
+            <% } %>            
+            <button class="btn btn-inverse" id="zoomOutBtn"><i class="icon-minus icon-white"></i></button>
+            <button class="btn btn-inverse" id="zoomInBtn"><i class="icon-plus icon-white"></i></button>
+            <% if (!presenter) { %>   
+            <a class="btn btn-inverse" id="downloadBtn"><i class="icon-download-alt icon-white"></i></a>
+            <% } %>            
+            <% if (presenter) { %>   
+            <button class="btn btn-inverse" id="presentationInfoBtn"><i class="icon-info-sign icon-white"></i></button>              
+            <% } %>            
           </div>    
         </div>
-        <% } %>
       </div>
     </div>
     <div class="container">      
@@ -77,13 +84,28 @@
           socket.emit('next');
         });
         <% } %>       
+        <% if (!presenter) { %>         
+        $('#downloadBtn').attr('href', loc+"/uploads/<%= presentationFileName %>");
+        <% } %>       
+        $('#zoomInBtn').click(function(){
+          if(scale < 3) {
+            scale = scale + 0.5;
+            renderPage(pageNum);
+          }
+        });
+        $('#zoomOutBtn').click(function(){
+          if(scale > 1) {
+            scale = scale - 0.5;
+            renderPage(pageNum);
+          }
+        });
         var socket = io.connect(loc);
         socket.on('connect', function(){
           socket.emit('attend_presentation', {presentationID : presentationID});
         });
         socket.on('next_slide', function (data) {
           if (pageNum >= pdfDoc.numPages)
-          return;
+            return;
           pageNum++;
           renderPage(pageNum);
         });
