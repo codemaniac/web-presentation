@@ -67,3 +67,11 @@
     display: inline;
     margin-right: 10px;
 }
+
+label.error {
+	font-weight: bold;
+  font-size: 10pt;
+	color: red;
+	padding: 2px 8px;
+	margin-top: 2px;
+}
