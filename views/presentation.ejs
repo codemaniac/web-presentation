@@ -80,38 +80,45 @@
         <% if (presenter) { %>         
         $("#presentationLink").html(loc + '/' + presentationID);
         $('#infoModal').modal('show');
-        $('#prevBtn').click(function(){
+        $('#prevBtn').click(function(e){
+          e.preventDefault();
           socket.emit('previous');
         });
-        $('#nextBtn').click(function(){
+        $('#nextBtn').click(function(e){
+          e.preventDefault();
           socket.emit('next');
         });
         <% } %>       
         <% if (!presenter) { %>         
         $('#downloadBtn').attr('href', loc+"/uploads/<%= presentationFileName %>");
         <% } %>       
-        $('#infoBtn').click(function(){
+        $('#infoBtn').click(function(e){
+          e.preventDefault();
           $('#infoModal').modal('show');
         });
-        $('#zoomInBtn').click(function(){
+        $('#zoomInBtn').click(function(e){
+          e.preventDefault();
           if(scale < 3) {
             scale = scale + 0.5;
             renderPage(pageNum);
           }
         });
-        $('#zoomOutBtn').click(function(){
+        $('#zoomOutBtn').click(function(e){
+          e.preventDefault();
           if(scale > 1) {
             scale = scale - 0.5;
             renderPage(pageNum);
           }
         });
-        $('#noZoomBtn').click(function(){
+        $('#noZoomBtn').click(function(e){
+          e.preventDefault();
           if(scale != 1.0) {
             scale = 1.0,
             renderPage(pageNum);
           }
         });
-        $('#refreshBtn').click(function(){
+        $('#refreshBtn').click(function(e){
+          e.preventDefault();
           renderPage(pageNum);
         });
         var socket = io.connect(loc);
