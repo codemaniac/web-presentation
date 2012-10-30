@@ -10,20 +10,34 @@
       <div class="navbar-inner">
         <a class="brand" href="#">Web-Presentations</a>
         <div class="span8" align="center">
-          <div class="btn-group">
+          <div class="btn-toolbar" style="margin-top: 0px; margin-bottom: 0px;">
             <% if (presenter) { %>   
-            <button class="btn btn-inverse" id="prevBtn"><i class="icon-step-backward icon-white"></i></button>
-            <button class="btn btn-inverse" id="nextBtn"><i class="icon-step-forward icon-white"></i></button>
+            <div class="btn-group">
+              <button class="btn btn-inverse" id="prevBtn"><i class="icon-step-backward icon-white"></i></button>
+              <button class="btn btn-inverse" id="nextBtn"><i class="icon-step-forward icon-white"></i></button>
+              <div class="btn-group">
+                <a class="btn btn-inverse dropdown-toggle" data-toggle="dropdown" href="#"><i class="icon-pencil icon-white"></i><span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                  <li><a href="#">Red</a></li>
+                  <li><a href="#">Blue</a></li>
+                  <li><a href="#">Green</a></li>
+                  <li><a href="#">Black</a></li>
+                </ul>
+              </div>
+              <button class="btn btn-inverse" id="whiteboardBtn"><i class="icon-edit icon-white"></i></button>
+            </div>
             <% } %>            
-            <button class="btn btn-inverse" id="zoomOutBtn"><i class="icon-minus icon-white"></i></button>
-            <button class="btn btn-inverse" id="zoomInBtn"><i class="icon-plus icon-white"></i></button>
-            <button class="btn btn-inverse" id="noZoomBtn"><strong>1:1</strong></button>
-            <button class="btn btn-inverse" id="refreshBtn"><i class="icon-refresh icon-white"></i></button>
-            <% if (!presenter) { %>   
-            <a class="btn btn-inverse" id="downloadBtn"><i class="icon-download-alt icon-white"></i></a>
-            <% } %>            
-            <button class="btn btn-inverse" id="infoBtn"><i class="icon-info-sign icon-white"></i></button>              
-          </div>    
+            <div class="btn-group">
+              <button class="btn btn-inverse" id="zoomOutBtn"><i class="icon-minus icon-white"></i></button>
+              <button class="btn btn-inverse" id="zoomInBtn"><i class="icon-plus icon-white"></i></button>
+              <button class="btn btn-inverse" id="noZoomBtn"><strong>1:1</strong></button>
+              <button class="btn btn-inverse" id="refreshBtn"><i class="icon-refresh icon-white"></i></button>
+              <% if (!presenter) { %>   
+              <a class="btn btn-inverse" id="downloadBtn"><i class="icon-download-alt icon-white"></i></a>
+              <% } %>            
+              <button class="btn btn-inverse" id="infoBtn"><i class="icon-info-sign icon-white"></i></button>                
+            </div>
+          </div>
         </div>
         <div class="span2">
           <button class="btn disabled"><span id="page_num"></span> / <span id="page_count"></span></button>
