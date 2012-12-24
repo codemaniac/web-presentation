@@ -51,5 +51,14 @@ io.sockets.on('connection', function (socket) {
     routes.presentations[socket.room].pgno--;
     io.sockets.in(socket.room).emit('previous_slide');
   });
+  socket.on('presentation', function (data) {    
+    io.sockets.in(socket.room).emit('show_presentation');
+  });
+  socket.on('whiteboard', function (data) {
+    io.sockets.in(socket.room).emit('show_whiteboard');
+  });
+  socket.on('presenterDraw', function (data) {
+    io.sockets.in(socket.room).emit('draw', {x: data.x, y: data.y, type: data.type});
+  });
 });
 
